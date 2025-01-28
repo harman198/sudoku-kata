@@ -1,5 +1,4 @@
 ﻿using SudokuKata;
-using System;
 
 SudokuGame.Play();
 

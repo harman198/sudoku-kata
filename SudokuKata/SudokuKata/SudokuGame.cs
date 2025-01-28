@@ -7,6 +7,9 @@ namespace SudokuKata
 {
     public static class SudokuGame
     {
+        private const string LINE = "+---+---+---+";
+        private const string MIDDLE = "|...|...|...|";
+
         internal static void Play()
         {
             Random rng = new Random();
@@ -17,23 +20,21 @@ namespace SudokuKata
         {
             #region Construct fully populated board
             // Prepare empty board
-            string line = "+---+---+---+";
-            string middle = "|...|...|...|";
             char[][] board = new char[][]
             {
-                line.ToCharArray(),
-                middle.ToCharArray(),
-                middle.ToCharArray(),
-                middle.ToCharArray(),
-                line.ToCharArray(),
-                middle.ToCharArray(),
-                middle.ToCharArray(),
-                middle.ToCharArray(),
-                line.ToCharArray(),
-                middle.ToCharArray(),
-                middle.ToCharArray(),
-                middle.ToCharArray(),
-                line.ToCharArray()
+                LINE.ToCharArray(),
+                MIDDLE.ToCharArray(),
+                MIDDLE.ToCharArray(),
+                MIDDLE.ToCharArray(),
+                LINE.ToCharArray(),
+                MIDDLE.ToCharArray(),
+                MIDDLE.ToCharArray(),
+                MIDDLE.ToCharArray(),
+                LINE.ToCharArray(),
+                MIDDLE.ToCharArray(),
+                MIDDLE.ToCharArray(),
+                MIDDLE.ToCharArray(),
+                LINE.ToCharArray()
             };
 
             // Construct board to be solved

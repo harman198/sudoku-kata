@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SudokuKata
 {
-    internal static class SudokuGame
+    public static class SudokuGame
     {
         internal static void Play()
         {

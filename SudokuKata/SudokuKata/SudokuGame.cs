@@ -38,16 +38,6 @@ public static class SudokuGame
         // Top element is current state of the board
         Stack<int[]> stateStack = CreateSolvedBoard(rng, board);
 
-        // Top elements are (row, col) of cell which has been modified compared to previous state
-        Stack<int> rowIndexStack = new();
-        Stack<int> colIndexStack = new();
-
-        // Top element indicates candidate digits (those with False) for (row, col)
-        Stack<bool[]> usedDigitsStack = new();
-
-        // Top element is the value that was set on (row, col)
-        Stack<int> lastDigitStack = new();
-
         Console.WriteLine();
         Console.WriteLine("Final look of the solved board:");
         Console.WriteLine(string.Join(Environment.NewLine, board.Select(s => new string(s)).ToArray()));
@@ -625,10 +615,16 @@ public static class SudokuGame
                     // However, the algorithm couldn't be applied directly and it had to be modified.
                     // Implementation below assumes that the board might not have a solution.
                     stateStack = new Stack<int[]>();
-                    rowIndexStack = new Stack<int>();
-                    colIndexStack = new Stack<int>();
-                    usedDigitsStack = new Stack<bool[]>();
-                    lastDigitStack = new Stack<int>();
+
+                    // Top elements are (row, col) of cell which has been modified compared to previous state
+                    Stack<int> rowIndexStack = new();
+                    Stack<int> colIndexStack = new();
+
+                    // Top element indicates candidate digits (those with False) for (row, col)
+                    Stack<bool[]> usedDigitsStack = new();
+
+                    // Top element is the value that was set on (row, col)
+                    Stack<int> lastDigitStack = new();
 
                     string command = "expand";
                     while (command != "complete" && command != "fail")

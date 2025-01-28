@@ -4,8 +4,6 @@ namespace SudokuKata;
 
 public static class SudokuGame
 {
-    private const string LINE = "+---+---+---+";
-    private const string MIDDLE = "|...|...|...|";
 
     internal static void Play()
     {
@@ -16,31 +14,14 @@ public static class SudokuGame
     public static void Play(Random rng)
     {
         #region Construct fully populated board
-        // Prepare empty board
-        char[][] board =
-        [
-            LINE.ToCharArray(),
-            MIDDLE.ToCharArray(),
-            MIDDLE.ToCharArray(),
-            MIDDLE.ToCharArray(),
-            LINE.ToCharArray(),
-            MIDDLE.ToCharArray(),
-            MIDDLE.ToCharArray(),
-            MIDDLE.ToCharArray(),
-            LINE.ToCharArray(),
-            MIDDLE.ToCharArray(),
-            MIDDLE.ToCharArray(),
-            MIDDLE.ToCharArray(),
-            LINE.ToCharArray()
-        ];
 
         // Construct board to be solved
         // Top element is current state of the board
-        Stack<int[]> stateStack = SudokuGameCreator.CreateSolvedBoard(rng, board);
+        SudokuBoardAndGameStack boardAndGameStack = SudokuGameCreator.CreateSolvedBoard(rng);
 
         Console.WriteLine();
         Console.WriteLine("Final look of the solved board:");
-        Console.WriteLine(string.Join(Environment.NewLine, board.Select(s => new string(s)).ToArray()));
+        Console.WriteLine(string.Join(Environment.NewLine, boardAndGameStack.Board.Select(s => new string(s)).ToArray()));
         #endregion
 
         #region Generate inital board from the completely solved one
@@ -50,7 +31,7 @@ public static class SudokuGame
         int maxRemovedPerBlock = 6;
         int[,] removedPerBlock = new int[3, 3];
         int[] positions = Enumerable.Range(0, 9 * 9).ToArray();
-        int[] state = stateStack.Peek();
+        int[] state = boardAndGameStack.StateStack.Peek();
 
         int[] finalState = new int[state.Length];
         Array.Copy(state, finalState, finalState.Length);
@@ -76,7 +57,7 @@ public static class SudokuGame
             int rowToWrite = row + row / 3 + 1;
             int colToWrite = col + col / 3 + 1;
 
-            board[rowToWrite][colToWrite] = '.';
+            boardAndGameStack.Board[rowToWrite][colToWrite] = '.';
 
             int stateIndex = 9 * row + col;
             state[stateIndex] = 0;
@@ -86,7 +67,7 @@ public static class SudokuGame
 
         Console.WriteLine();
         Console.WriteLine("Starting look of the board to solve:");
-        Console.WriteLine(string.Join("\n", board.Select(s => new string(s)).ToArray()));
+        Console.WriteLine(string.Join("\n", boardAndGameStack.Board.Select(s => new string(s)).ToArray()));
         #endregion
 
         #region Prepare lookup structures that will be used in further execution
@@ -201,7 +182,7 @@ public static class SudokuGame
                     int colToWrite = col + col / 3 + 1;
 
                     state[singleCandidateIndex] = candidate + 1;
-                    board[rowToWrite][colToWrite] = (char)('1' + candidate);
+                    boardAndGameStack.Board[rowToWrite][colToWrite] = (char)('1' + candidate);
                     candidateMasks[singleCandidateIndex] = 0;
                     changeMade = true;
 
@@ -304,7 +285,7 @@ public static class SudokuGame
                         int stateIndex = 9 * row + col;
                         state[stateIndex] = digit;
                         candidateMasks[stateIndex] = 0;
-                        board[rowToWrite][colToWrite] = (char)('0' + digit);
+                        boardAndGameStack.Board[rowToWrite][colToWrite] = (char)('0' + digit);
 
                         changeMade = true;
 
@@ -593,7 +574,7 @@ public static class SudokuGame
                     // What follows below is a complete copy-paste of the solver which appears at the beginning of this method
                     // However, the algorithm couldn't be applied directly and it had to be modified.
                     // Implementation below assumes that the board might not have a solution.
-                    stateStack = new Stack<int[]>();
+                    var stateStack = new Stack<int[]>();
 
                     // Top elements are (row, col) of cell which has been modified compared to previous state
                     Stack<int> rowIndexStack = new();
@@ -725,7 +706,7 @@ public static class SudokuGame
                             {
                                 usedDigits[digitToMove - 1] = false;
                                 currentState[currentStateIndex] = 0;
-                                board[rowToWrite][colToWrite] = '.';
+                                boardAndGameStack.Board[rowToWrite][colToWrite] = '.';
                             }
 
                             if (movedToDigit <= 9)
@@ -733,7 +714,7 @@ public static class SudokuGame
                                 lastDigitStack.Push(movedToDigit);
                                 usedDigits[movedToDigit - 1] = true;
                                 currentState[currentStateIndex] = movedToDigit;
-                                board[rowToWrite][colToWrite] = (char)('0' + movedToDigit);
+                                boardAndGameStack.Board[rowToWrite][colToWrite] = (char)('0' + movedToDigit);
 
                                 if (currentState.Any(digit => digit == 0))
                                     command = "expand";
@@ -799,9 +780,9 @@ public static class SudokuGame
                         int rowToWrite = tempRow + tempRow / 3 + 1;
                         int colToWrite = tempCol + tempCol / 3 + 1;
 
-                        board[rowToWrite][colToWrite] = '.';
+                        boardAndGameStack.Board[rowToWrite][colToWrite] = '.';
                         if (state[i] > 0)
-                            board[rowToWrite][colToWrite] = (char)('0' + state[i]);
+                            boardAndGameStack.Board[rowToWrite][colToWrite] = (char)('0' + state[i]);
                     }
 
                     Console.WriteLine($"Guessing that {digit1} and {digit2} are arbitrary in {description} (multiple solutions): Pick {finalState[index1]}->({row1 + 1}, {col1 + 1}), {finalState[index2]}->({row2 + 1}, {col2 + 1}).");
@@ -812,9 +793,9 @@ public static class SudokuGame
             if (changeMade)
             {
                 #region Print the board as it looks after one change was made to it
-                Console.WriteLine(string.Join(Environment.NewLine, board.Select(s => new string(s)).ToArray()));
+                Console.WriteLine(string.Join(Environment.NewLine, boardAndGameStack.Board.Select(s => new string(s)).ToArray()));
                 string code =
-                    string.Join(string.Empty, board.Select(s => new string(s)).ToArray())
+                    string.Join(string.Empty, boardAndGameStack.Board.Select(s => new string(s)).ToArray())
                         .Replace("-", string.Empty)
                         .Replace("+", string.Empty)
                         .Replace("|", string.Empty)

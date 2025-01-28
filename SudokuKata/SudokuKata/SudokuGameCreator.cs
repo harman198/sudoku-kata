@@ -3,9 +3,9 @@
     internal static class SudokuGameCreator
     {
 
-        public static Stack<int[]> CreateSolvedBoard(Random rng, char[][] board)
+        public static SudokuBoardAndGameStack CreateSolvedBoard(Random rng)
         {
-            Stack<int[]> stateStack = new();
+            var sudokuBoardAndGameStack = new SudokuBoardAndGameStack();
             Stack<int> rowIndexStack = new();
             Stack<int> colIndexStack = new();
             Stack<bool[]> usedDigitsStack = new();
@@ -16,15 +16,15 @@
             // - move - finds next candidate number at current pos and applies it to current state
             // - collapse - pops current state from stack as it did not yield a solution
             string command = "expand";
-            while (stateStack.Count <= 9 * 9)
+            while (sudokuBoardAndGameStack.StateStack.Count <= 9 * 9)
             {
                 if (command == "expand")
                 {
                     int[] currentState = new int[9 * 9];
 
-                    if (stateStack.Count > 0)
+                    if (sudokuBoardAndGameStack.StateStack.Count > 0)
                     {
-                        Array.Copy(stateStack.Peek(), currentState, currentState.Length);
+                        Array.Copy(sudokuBoardAndGameStack.StateStack.Peek(), currentState, currentState.Length);
                     }
 
                     int bestRow = -1;
@@ -85,7 +85,7 @@
 
                     if (!containsUnsolvableCells)
                     {
-                        stateStack.Push(currentState);
+                        sudokuBoardAndGameStack.StateStack.Push(currentState);
                         rowIndexStack.Push(bestRow);
                         colIndexStack.Push(bestCol);
                         usedDigitsStack.Push(bestUsedDigits);
@@ -98,7 +98,7 @@
                 } // if (command == "expand")
                 else if (command == "collapse")
                 {
-                    stateStack.Pop();
+                    sudokuBoardAndGameStack.StateStack.Pop();
                     rowIndexStack.Pop();
                     colIndexStack.Pop();
                     usedDigitsStack.Pop();
@@ -117,7 +117,7 @@
                     int colToWrite = colToMove + colToMove / 3 + 1;
 
                     bool[] usedDigits = usedDigitsStack.Peek();
-                    int[] currentState = stateStack.Peek();
+                    int[] currentState = sudokuBoardAndGameStack.StateStack.Peek();
                     int currentStateIndex = 9 * rowToMove + colToMove;
 
                     int movedToDigit = digitToMove + 1;
@@ -128,7 +128,7 @@
                     {
                         usedDigits[digitToMove - 1] = false;
                         currentState[currentStateIndex] = 0;
-                        board[rowToWrite][colToWrite] = '.';
+                        sudokuBoardAndGameStack.Board[rowToWrite][colToWrite] = '.';
                     }
 
                     if (movedToDigit <= 9)
@@ -136,7 +136,7 @@
                         lastDigitStack.Push(movedToDigit);
                         usedDigits[movedToDigit - 1] = true;
                         currentState[currentStateIndex] = movedToDigit;
-                        board[rowToWrite][colToWrite] = (char)('0' + movedToDigit);
+                        sudokuBoardAndGameStack.Board[rowToWrite][colToWrite] = (char)('0' + movedToDigit);
 
                         // Next possible digit was found at current position
                         // Next step will be to expand the state
@@ -152,7 +152,7 @@
 
             }
 
-            return stateStack;
+            return sudokuBoardAndGameStack;
         }
     }
 }

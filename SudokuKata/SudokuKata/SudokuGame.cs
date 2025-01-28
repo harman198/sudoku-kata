@@ -12,7 +12,7 @@ namespace SudokuKata
 
         internal static void Play()
         {
-            Random rng = new Random();
+            Random rng = new();
             Play(rng);
         }
 
@@ -20,8 +20,8 @@ namespace SudokuKata
         {
             #region Construct fully populated board
             // Prepare empty board
-            char[][] board = new char[][]
-            {
+            char[][] board =
+            [
                 LINE.ToCharArray(),
                 MIDDLE.ToCharArray(),
                 MIDDLE.ToCharArray(),
@@ -35,22 +35,22 @@ namespace SudokuKata
                 MIDDLE.ToCharArray(),
                 MIDDLE.ToCharArray(),
                 LINE.ToCharArray()
-            };
+            ];
 
             // Construct board to be solved
 
             // Top element is current state of the board
-            Stack<int[]> stateStack = new Stack<int[]>();
+            Stack<int[]> stateStack = new();
 
             // Top elements are (row, col) of cell which has been modified compared to previous state
-            Stack<int> rowIndexStack = new Stack<int>();
-            Stack<int> colIndexStack = new Stack<int>();
+            Stack<int> rowIndexStack = new();
+            Stack<int> colIndexStack = new();
 
             // Top element indicates candidate digits (those with False) for (row, col)
-            Stack<bool[]> usedDigitsStack = new Stack<bool[]>();
+            Stack<bool[]> usedDigitsStack = new();
 
             // Top element is the value that was set on (row, col)
-            Stack<int> lastDigitStack = new Stack<int>();
+            Stack<int> lastDigitStack = new();
 
             // Indicates operation to perform next
             // - expand - finds next empty cell and puts new state on stacks
@@ -227,10 +227,7 @@ namespace SudokuKata
 
                 removedPerBlock[blockRowToRemove, blockColToRemove] += 1;
 
-                int temp = positions[removedPos];
-                positions[removedPos] = positions[indexToPick];
-                positions[indexToPick] = temp;
-
+                (positions[indexToPick], positions[removedPos]) = (positions[removedPos], positions[indexToPick]);
                 int rowToWrite = row + row / 3 + 1;
                 int colToWrite = col + col / 3 + 1;
 
@@ -252,8 +249,10 @@ namespace SudokuKata
             Console.WriteLine(new string('=', 80));
             Console.WriteLine();
 
-            Dictionary<int, int> maskToOnesCount = new Dictionary<int, int>();
-            maskToOnesCount[0] = 0;
+            Dictionary<int, int> maskToOnesCount = new()
+            {
+                [0] = 0
+            };
             for (int i = 1; i < (1 << 9); i++)
             {
                 int smaller = i >> 1;
@@ -261,7 +260,7 @@ namespace SudokuKata
                 maskToOnesCount[i] = maskToOnesCount[smaller] + increment;
             }
 
-            Dictionary<int, int> singleBitToIndex = new Dictionary<int, int>();
+            Dictionary<int, int> singleBitToIndex = [];
             for (int i = 0; i < 9; i++)
                 singleBitToIndex[1 << i] = i;
 
@@ -337,9 +336,9 @@ namespace SudokuKata
                     {
                         Discriminator = 18 + 3 * (tuple.Row / 3) + tuple.Column / 3,
                         Description = $"block ({tuple.Row / 3 + 1}, {tuple.Column / 3 + 1})",
-                        Index = tuple.Index,
-                        Row = tuple.Row,
-                        Column = tuple.Column
+                        tuple.Index,
+                        tuple.Row,
+                        tuple.Column
                     })
                     .GroupBy(tuple => tuple.Discriminator);
 
@@ -391,10 +390,10 @@ namespace SudokuKata
 
                     if (!changeMade)
                     {
-                        List<string> groupDescriptions = new List<string>();
-                        List<int> candidateRowIndices = new List<int>();
-                        List<int> candidateColIndices = new List<int>();
-                        List<int> candidates = new List<int>();
+                        List<string> groupDescriptions = [];
+                        List<int> candidateRowIndices = [];
+                        List<int> candidateColIndices = [];
+                        List<int> candidates = [];
 
                         for (int digit = 1; digit <= 9; digit++)
                         {
@@ -507,12 +506,12 @@ namespace SudokuKata
                                         {
                                             Mask = mask,
                                             Discriminator = group.Key,
-                                            Description = group.First().Description,
+                                            group.First().Description,
                                             Cells = group
                                         }))
                                 .ToList();
 
-                        if (groups.Any())
+                        if (groups.Count != 0)
                         {
                             foreach (var group in groups)
                             {
@@ -530,7 +529,7 @@ namespace SudokuKata
                                         .ToArray();
 
 
-                                if (cells.Any())
+                                if (cells.Count != 0)
                                 {
                                     int upper = 0;
                                     int lower = 0;
@@ -544,7 +543,7 @@ namespace SudokuKata
                                             lower = upper;
                                             upper = value;
                                         }
-                                        temp = temp >> 1;
+                                        temp >>= 1;
                                         value += 1;
                                     }
 
@@ -554,7 +553,7 @@ namespace SudokuKata
                                     foreach (var cell in cells)
                                     {
                                         int maskToRemove = candidateMasks[cell.Index] & group.Mask;
-                                        List<int> valuesToRemove = new List<int>();
+                                        List<int> valuesToRemove = [];
                                         int curValue = 1;
                                         while (maskToRemove > 0)
                                         {
@@ -562,7 +561,7 @@ namespace SudokuKata
                                             {
                                                 valuesToRemove.Add(curValue);
                                             }
-                                            maskToRemove = maskToRemove >> 1;
+                                            maskToRemove >>= 1;
                                             curValue += 1;
                                         }
 
@@ -598,7 +597,7 @@ namespace SudokuKata
                                         .Select(group => new
                                         {
                                             Mask = mask,
-                                            Description = group.First().Description,
+                                            group.First().Description,
                                             Cells = group,
                                             CellsWithMask =
                                                 group.Where(cell => state[cell.Index] == 0 && (candidateMasks[cell.Index] & mask) != 0).ToList(),
@@ -608,7 +607,7 @@ namespace SudokuKata
                                                         (candidateMasks[cell.Index] & mask) != 0 &&
                                                         (candidateMasks[cell.Index] & ~mask) != 0)
                                         }))
-                                .Where(group => group.CellsWithMask.Count() == maskToOnesCount[group.Mask])
+                                .Where(group => group.CellsWithMask.Count == maskToOnesCount[group.Mask])
                                 .ToList();
 
                         foreach (var groupWithNMasks in groupsWithNMasks)
@@ -620,7 +619,7 @@ namespace SudokuKata
                                     (candidateMasks[cell.Index] & mask) != 0 &&
                                     (candidateMasks[cell.Index] & ~mask) != 0))
                             {
-                                StringBuilder message = new StringBuilder();
+                                StringBuilder message = new();
                                 message.Append($"In {groupWithNMasks.Description} values ");
 
                                 string separator = string.Empty;
@@ -633,7 +632,7 @@ namespace SudokuKata
                                         message.Append($"{separator}{curValue}");
                                         separator = ", ";
                                     }
-                                    temp = temp >> 1;
+                                    temp >>= 1;
                                     curValue += 1;
                                 }
 
@@ -660,7 +659,7 @@ namespace SudokuKata
                                 int valueToClear = 1;
 
                                 string separator = string.Empty;
-                                StringBuilder message = new StringBuilder();
+                                StringBuilder message = new();
 
                                 while (maskToClear > 0)
                                 {
@@ -669,7 +668,7 @@ namespace SudokuKata
                                         message.Append($"{separator}{valueToClear}");
                                         separator = ", ";
                                     }
-                                    maskToClear = maskToClear >> 1;
+                                    maskToClear >>= 1;
                                     valueToClear += 1;
                                 }
 
@@ -692,10 +691,10 @@ namespace SudokuKata
                     // Try to see if there are pairs of values that can be exchanged arbitrarily
                     // This happens when board has more than one valid solution
 
-                    Queue<int> candidateIndex1 = new Queue<int>();
-                    Queue<int> candidateIndex2 = new Queue<int>();
-                    Queue<int> candidateDigit1 = new Queue<int>();
-                    Queue<int> candidateDigit2 = new Queue<int>();
+                    Queue<int> candidateIndex1 = new();
+                    Queue<int> candidateIndex2 = new();
+                    Queue<int> candidateDigit1 = new();
+                    Queue<int> candidateDigit2 = new();
 
                     for (int i = 0; i < candidateMasks.Length - 1; i++)
                     {
@@ -715,7 +714,7 @@ namespace SudokuKata
                                     lower = upper;
                                     upper = digit;
                                 }
-                                temp = temp >> 1;
+                                temp >>= 1;
                             }
 
                             for (int j = i + 1; j < candidateMasks.Length; j++)
@@ -741,12 +740,12 @@ namespace SudokuKata
                     // At this point we have the lists with pairs of cells that might pick one of two digits each
                     // Now we have to check whether that is really true - does the board have two solutions?
 
-                    List<int> stateIndex1 = new List<int>();
-                    List<int> stateIndex2 = new List<int>();
-                    List<int> value1 = new List<int>();
-                    List<int> value2 = new List<int>();
+                    List<int> stateIndex1 = [];
+                    List<int> stateIndex2 = [];
+                    List<int> value1 = [];
+                    List<int> value2 = [];
 
-                    while (candidateIndex1.Any())
+                    while (candidateIndex1.Count != 0)
                     {
                         int index1 = candidateIndex1.Dequeue();
                         int index2 = candidateIndex2.Dequeue();
@@ -783,7 +782,7 @@ namespace SudokuKata
                             {
                                 int[] currentState = new int[9 * 9];
 
-                                if (stateStack.Any())
+                                if (stateStack.Count != 0)
                                 {
                                     Array.Copy(stateStack.Peek(), currentState, currentState.Length);
                                 }
@@ -869,7 +868,7 @@ namespace SudokuKata
                                 usedDigitsStack.Pop();
                                 lastDigitStack.Pop();
 
-                                if (stateStack.Any())
+                                if (stateStack.Count != 0)
                                     command = "move"; // Always try to move after collapse
                                 else
                                     command = "fail";
@@ -930,9 +929,9 @@ namespace SudokuKata
                         }
                     } // while (candidateIndex1.Any())
 
-                    if (stateIndex1.Any())
+                    if (stateIndex1.Count != 0)
                     {
-                        int pos = rng.Next(stateIndex1.Count());
+                        int pos = rng.Next(stateIndex1.Count);
                         int index1 = stateIndex1.ElementAt(pos);
                         int index2 = stateIndex2.ElementAt(pos);
                         int digit1 = value1.ElementAt(pos);

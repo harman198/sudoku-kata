@@ -648,7 +648,7 @@ public static class SudokuGame
 
                             int bestRow = -1;
                             int bestCol = -1;
-                            bool[] bestUsedDigits = null;
+                            bool[] bestUsedDigits = [];
                             int bestCandidatesCount = -1;
                             int bestRandomValue = -1;
                             bool containsUnsolvableCells = false;
@@ -878,7 +878,7 @@ public static class SudokuGame
 
                 int bestRow = -1;
                 int bestCol = -1;
-                bool[] bestUsedDigits = null;
+                bool[] bestUsedDigits = [];
                 int bestCandidatesCount = -1;
                 int bestRandomValue = -1;
                 bool containsUnsolvableCells = false;

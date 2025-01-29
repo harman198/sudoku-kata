@@ -1,9 +1,10 @@
 ﻿namespace SudokuKata
 {
-    internal static class SudokuGameCreator
+    internal class SudokuGameCreator(Random random)
     {
+        private readonly Random _random = random;
 
-        public static SudokuBoardAndGameStack CreateSolvedBoard(Random rng)
+        public SudokuBoardAndGameStack CreateSolvedBoard()
         {
             var sudokuBoardAndGameStack = new SudokuBoardAndGameStack();
             Stack<int> rowIndexStack = new();
@@ -68,7 +69,7 @@
                                 break;
                             }
 
-                            int randomValue = rng.Next();
+                            int randomValue = _random.Next();
 
                             if (bestCandidatesCount < 0 ||
                                 candidatesCount < bestCandidatesCount ||

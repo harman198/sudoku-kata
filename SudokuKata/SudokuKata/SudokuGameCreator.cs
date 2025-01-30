@@ -19,17 +19,17 @@
             Command command = Command.Expand;
             while (sudokuBoardAndGameStack.StateStack.Count <= 9 * 9)
             {
-                if (command == Command.Expand)
+                switch (command)
                 {
-                    command = ExpandBoard(sudokuBoardAndGameStack, rowIndexStack, colIndexStack, usedDigitsStack, lastDigitStack);
-                }
-                else if (command == Command.Collapse)
-                {
-                    command = CollapseBoard(sudokuBoardAndGameStack, rowIndexStack, colIndexStack, usedDigitsStack, lastDigitStack);
-                }
-                else if (command == Command.Move)
-                {
-                    command = MoveBoard(sudokuBoardAndGameStack, rowIndexStack, colIndexStack, usedDigitsStack, lastDigitStack);
+                    case Command.Expand:
+                        command = ExpandBoard(sudokuBoardAndGameStack, rowIndexStack, colIndexStack, usedDigitsStack, lastDigitStack);
+                        break;
+                    case Command.Collapse:
+                        command = CollapseBoard(sudokuBoardAndGameStack, rowIndexStack, colIndexStack, usedDigitsStack, lastDigitStack);
+                        break;
+                    case Command.Move:
+                        command = MoveBoard(sudokuBoardAndGameStack, rowIndexStack, colIndexStack, usedDigitsStack, lastDigitStack);
+                        break;
                 }
 
             }

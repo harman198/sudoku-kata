@@ -16,24 +16,28 @@
             // - expand - finds next empty cell and puts new state on stacks
             // - move - finds next candidate number at current pos and applies it to current state
             // - collapse - pops current state from stack as it did not yield a solution
-            string command = "expand";
+            Command command = Command.Expand;
             while (sudokuBoardAndGameStack.StateStack.Count <= 9 * 9)
             {
-                if (command == "expand")
-                    command = ExpandBoard(sudokuBoardAndGameStack, rowIndexStack, colIndexStack, usedDigitsStack, lastDigitStack); // if (command == "expand")
-                else if (command == "collapse")
+                if (command == Command.Expand)
+                {
+                    command = ExpandBoard(sudokuBoardAndGameStack, rowIndexStack, colIndexStack, usedDigitsStack, lastDigitStack);
+                }
+                else if (command == Command.Collapse)
                 {
                     command = CollapseBoard(sudokuBoardAndGameStack, rowIndexStack, colIndexStack, usedDigitsStack, lastDigitStack);
                 }
-                else if (command == "move")
+                else if (command == Command.Move)
+                {
                     command = MoveBoard(sudokuBoardAndGameStack, rowIndexStack, colIndexStack, usedDigitsStack, lastDigitStack);
+                }
 
             }
 
             return sudokuBoardAndGameStack;
         }
 
-        private static string MoveBoard(SudokuBoardAndGameStack sudokuBoardAndGameStack, Stack<int> rowIndexStack, Stack<int> colIndexStack, Stack<bool[]> usedDigitsStack, Stack<int> lastDigitStack)
+        private static Command MoveBoard(SudokuBoardAndGameStack sudokuBoardAndGameStack, Stack<int> rowIndexStack, Stack<int> colIndexStack, Stack<bool[]> usedDigitsStack, Stack<int> lastDigitStack)
         {
             int rowToMove = rowIndexStack.Peek();
             int colToMove = colIndexStack.Peek();
@@ -66,17 +70,17 @@
 
                 // Next possible digit was found at current position
                 // Next step will be to expand the state
-                return "expand";
+                return Command.Expand;
             }
             else
             {
                 // No viable candidate was found at current position - pop it in the next iteration
                 lastDigitStack.Push(0);
-                return "collapse";
+                return Command.Collapse;
             }
         }
 
-        private static string CollapseBoard(SudokuBoardAndGameStack sudokuBoardAndGameStack, Stack<int> rowIndexStack, Stack<int> colIndexStack, Stack<bool[]> usedDigitsStack, Stack<int> lastDigitStack)
+        private static Command CollapseBoard(SudokuBoardAndGameStack sudokuBoardAndGameStack, Stack<int> rowIndexStack, Stack<int> colIndexStack, Stack<bool[]> usedDigitsStack, Stack<int> lastDigitStack)
         {
             sudokuBoardAndGameStack.StateStack.Pop();
             rowIndexStack.Pop();
@@ -84,10 +88,10 @@
             usedDigitsStack.Pop();
             lastDigitStack.Pop();
 
-            return "move";
+            return Command.Move;
         }
 
-        private string ExpandBoard(SudokuBoardAndGameStack sudokuBoardAndGameStack, Stack<int> rowIndexStack, Stack<int> colIndexStack, Stack<bool[]> usedDigitsStack, Stack<int> lastDigitStack)
+        private Command ExpandBoard(SudokuBoardAndGameStack sudokuBoardAndGameStack, Stack<int> rowIndexStack, Stack<int> colIndexStack, Stack<bool[]> usedDigitsStack, Stack<int> lastDigitStack)
         {
             int[] currentState = new int[9 * 9];
 
@@ -162,7 +166,7 @@
             }
 
             // Always try to move after expand
-            return "move";
+            return Command.Move;
         }
     }
 }

@@ -23,13 +23,7 @@
                     command = ExpandBoard(sudokuBoardAndGameStack, rowIndexStack, colIndexStack, usedDigitsStack, lastDigitStack); // if (command == "expand")
                 else if (command == "collapse")
                 {
-                    sudokuBoardAndGameStack.StateStack.Pop();
-                    rowIndexStack.Pop();
-                    colIndexStack.Pop();
-                    usedDigitsStack.Pop();
-                    lastDigitStack.Pop();
-
-                    command = "move";   // Always try to move after collapse
+                    command = CollapseBoard(sudokuBoardAndGameStack, rowIndexStack, colIndexStack, usedDigitsStack, lastDigitStack);
                 }
                 else if (command == "move")
                 {
@@ -78,6 +72,17 @@
             }
 
             return sudokuBoardAndGameStack;
+        }
+
+        private static string CollapseBoard(SudokuBoardAndGameStack sudokuBoardAndGameStack, Stack<int> rowIndexStack, Stack<int> colIndexStack, Stack<bool[]> usedDigitsStack, Stack<int> lastDigitStack)
+        {
+            sudokuBoardAndGameStack.StateStack.Pop();
+            rowIndexStack.Pop();
+            colIndexStack.Pop();
+            usedDigitsStack.Pop();
+            lastDigitStack.Pop();
+
+            return "move";
         }
 
         private string ExpandBoard(SudokuBoardAndGameStack sudokuBoardAndGameStack, Stack<int> rowIndexStack, Stack<int> colIndexStack, Stack<bool[]> usedDigitsStack, Stack<int> lastDigitStack)

@@ -1,4 +1,6 @@
-﻿namespace SudokuKata
+﻿using System.Text;
+
+namespace SudokuKata
 {
     public class SudokuBoardAndGameStack
     {
@@ -21,5 +23,35 @@
                                             LINE.ToCharArray()
                                         ];
         public Stack<int[]> StateStack { get; } = new();
+
+        public string PrintBoard
+        {
+            get
+            {
+                if (StateStack.Count == 0)
+                {
+                    return string.Join(Environment.NewLine, Board.Select(s => new string(s)).ToArray());
+                }
+                else
+                {
+                    var stringBuilder = new StringBuilder();
+                    var row = 0;
+                    foreach (var item in StateStack.Peek().Chunk(3).ToList())
+                    {
+                        if (row % 9 == 0)
+                            stringBuilder.AppendLine(LINE);
+                        if (row % 3 == 0)
+                            stringBuilder.Append("|");
+                        stringBuilder.Append(string.Join("", item)).Append("|");
+                        if (row % 3 == 2)
+                            stringBuilder.AppendLine();
+
+                        row++;
+                    }
+                    stringBuilder.Append(LINE);
+                    return stringBuilder.ToString().TrimEnd();
+                }
+            }
+        }
     }
 }

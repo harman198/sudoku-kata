@@ -21,7 +21,7 @@ public static class SudokuGame
 
         Console.WriteLine();
         Console.WriteLine("Final look of the solved board:");
-        Console.WriteLine(string.Join(Environment.NewLine, boardAndGameStack.Board.Select(s => new string(s)).ToArray()));
+        Console.WriteLine(boardAndGameStack.PrintBoard);
         #endregion
 
         #region Generate inital board from the completely solved one

@@ -795,8 +795,9 @@ public static class SudokuGame
                 #region Print the board as it looks after one change was made to it
                 Console.WriteLine(boardAndGameStack.PrintBoard);
                 string code =
-                    string.Join(string.Empty, boardAndGameStack.Board.Select(s => new string(s)).ToArray())
+                    boardAndGameStack.PrintBoard
                         .Replace("-", string.Empty)
+                        .Replace(Environment.NewLine, string.Empty)
                         .Replace("+", string.Empty)
                         .Replace("|", string.Empty)
                         .Replace(".", "0");

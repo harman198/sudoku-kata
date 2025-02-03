@@ -67,7 +67,7 @@ public static class SudokuGame
 
         Console.WriteLine();
         Console.WriteLine("Starting look of the board to solve:");
-        Console.WriteLine(string.Join("\n", boardAndGameStack.Board.Select(s => new string(s)).ToArray()));
+        Console.WriteLine(boardAndGameStack.PrintBoard);
         #endregion
 
         #region Prepare lookup structures that will be used in further execution

@@ -17,11 +17,11 @@ public static class SudokuGame
 
         // Construct board to be solved
         // Top element is current state of the board
-        GameStack boardAndGameStack = new SudokuGameCreator(rng).CreateSolvedBoard();
+        GameStack gameStack = new SudokuGameCreator(rng).CreateSolvedBoard();
 
         Console.WriteLine();
         Console.WriteLine("Final look of the solved board:");
-        Console.WriteLine(boardAndGameStack.PrintBoard);
+        Console.WriteLine(gameStack.PrintBoard);
         #endregion
 
         #region Generate inital board from the completely solved one
@@ -31,7 +31,7 @@ public static class SudokuGame
         int maxRemovedPerBlock = 6;
         int[,] removedPerBlock = new int[3, 3];
         int[] positions = Enumerable.Range(0, 9 * 9).ToArray();
-        int[] state = boardAndGameStack.StateStack.Peek();
+        int[] state = gameStack.StateStack.Peek();
 
         int[] finalState = new int[state.Length];
         Array.Copy(state, finalState, finalState.Length);
@@ -65,7 +65,7 @@ public static class SudokuGame
 
         Console.WriteLine();
         Console.WriteLine("Starting look of the board to solve:");
-        Console.WriteLine(boardAndGameStack.PrintBoard);
+        Console.WriteLine(gameStack.PrintBoard);
         #endregion
 
         #region Prepare lookup structures that will be used in further execution
@@ -783,9 +783,9 @@ public static class SudokuGame
             if (changeMade)
             {
                 #region Print the board as it looks after one change was made to it
-                Console.WriteLine(boardAndGameStack.PrintBoard);
+                Console.WriteLine(gameStack.PrintBoard);
                 string code =
-                    boardAndGameStack.PrintBoard
+                    gameStack.PrintBoard
                         .Replace("-", string.Empty)
                         .Replace(Environment.NewLine, string.Empty)
                         .Replace("+", string.Empty)

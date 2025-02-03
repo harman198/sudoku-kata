@@ -793,7 +793,7 @@ public static class SudokuGame
             if (changeMade)
             {
                 #region Print the board as it looks after one change was made to it
-                Console.WriteLine(string.Join(Environment.NewLine, boardAndGameStack.Board.Select(s => new string(s)).ToArray()));
+                Console.WriteLine(boardAndGameStack.PrintBoard);
                 string code =
                     string.Join(string.Empty, boardAndGameStack.Board.Select(s => new string(s)).ToArray())
                         .Replace("-", string.Empty)

@@ -36,7 +36,7 @@ namespace SudokuKata
                 {
                     var stringBuilder = new StringBuilder();
                     var row = 0;
-                    foreach (var item in StateStack.Peek().Chunk(3).ToList())
+                    foreach (var item in StateStack.Peek().Select(x => x == 0 ? "." : x.ToString()).Chunk(3).ToList())
                     {
                         if (row % 9 == 0)
                             stringBuilder.AppendLine(LINE);

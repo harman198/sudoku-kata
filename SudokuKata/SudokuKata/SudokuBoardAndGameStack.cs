@@ -8,7 +8,7 @@ namespace SudokuKata
         private const string MIDDLE = "|...|...|...|";
 
         // Prepare empty board
-        public char[][] Board { get; } = [LINE.ToCharArray(),
+        private readonly char[][] Board = [LINE.ToCharArray(),
                                             MIDDLE.ToCharArray(),
                                             MIDDLE.ToCharArray(),
                                             MIDDLE.ToCharArray(),

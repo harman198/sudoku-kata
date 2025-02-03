@@ -57,8 +57,6 @@ public static class SudokuGame
             int rowToWrite = row + row / 3 + 1;
             int colToWrite = col + col / 3 + 1;
 
-            boardAndGameStack.Board[rowToWrite][colToWrite] = '.';
-
             int stateIndex = 9 * row + col;
             state[stateIndex] = 0;
 
@@ -182,7 +180,6 @@ public static class SudokuGame
                     int colToWrite = col + col / 3 + 1;
 
                     state[singleCandidateIndex] = candidate + 1;
-                    boardAndGameStack.Board[rowToWrite][colToWrite] = (char)('1' + candidate);
                     candidateMasks[singleCandidateIndex] = 0;
                     changeMade = true;
 
@@ -285,7 +282,6 @@ public static class SudokuGame
                         int stateIndex = 9 * row + col;
                         state[stateIndex] = digit;
                         candidateMasks[stateIndex] = 0;
-                        boardAndGameStack.Board[rowToWrite][colToWrite] = (char)('0' + digit);
 
                         changeMade = true;
 
@@ -706,7 +702,6 @@ public static class SudokuGame
                             {
                                 usedDigits[digitToMove - 1] = false;
                                 currentState[currentStateIndex] = 0;
-                                boardAndGameStack.Board[rowToWrite][colToWrite] = '.';
                             }
 
                             if (movedToDigit <= 9)
@@ -714,7 +709,6 @@ public static class SudokuGame
                                 lastDigitStack.Push(movedToDigit);
                                 usedDigits[movedToDigit - 1] = true;
                                 currentState[currentStateIndex] = movedToDigit;
-                                boardAndGameStack.Board[rowToWrite][colToWrite] = (char)('0' + movedToDigit);
 
                                 if (currentState.Any(digit => digit == 0))
                                     command = "expand";
@@ -779,10 +773,6 @@ public static class SudokuGame
                         int tempCol = i % 9;
                         int rowToWrite = tempRow + tempRow / 3 + 1;
                         int colToWrite = tempCol + tempCol / 3 + 1;
-
-                        boardAndGameStack.Board[rowToWrite][colToWrite] = '.';
-                        if (state[i] > 0)
-                            boardAndGameStack.Board[rowToWrite][colToWrite] = (char)('0' + state[i]);
                     }
 
                     Console.WriteLine($"Guessing that {digit1} and {digit2} are arbitrary in {description} (multiple solutions): Pick {finalState[index1]}->({row1 + 1}, {col1 + 1}), {finalState[index2]}->({row2 + 1}, {col2 + 1}).");

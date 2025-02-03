@@ -4,9 +4,9 @@
     {
         private readonly Random _random = random;
 
-        public SudokuBoardAndGameStack CreateSolvedBoard()
+        public GameStack CreateSolvedBoard()
         {
-            var sudokuBoardAndGameStack = new SudokuBoardAndGameStack();
+            var sudokuBoardAndGameStack = new GameStack();
             Stack<int> rowIndexStack = new();
             Stack<int> colIndexStack = new();
             Stack<bool[]> usedDigitsStack = new();
@@ -37,7 +37,7 @@
             return sudokuBoardAndGameStack;
         }
 
-        private static Command MoveBoard(SudokuBoardAndGameStack sudokuBoardAndGameStack, Stack<int> rowIndexStack, Stack<int> colIndexStack, Stack<bool[]> usedDigitsStack, Stack<int> lastDigitStack)
+        private static Command MoveBoard(GameStack sudokuBoardAndGameStack, Stack<int> rowIndexStack, Stack<int> colIndexStack, Stack<bool[]> usedDigitsStack, Stack<int> lastDigitStack)
         {
             int rowToMove = rowIndexStack.Peek();
             int colToMove = colIndexStack.Peek();
@@ -78,7 +78,7 @@
             }
         }
 
-        private static Command CollapseBoard(SudokuBoardAndGameStack sudokuBoardAndGameStack, Stack<int> rowIndexStack, Stack<int> colIndexStack, Stack<bool[]> usedDigitsStack, Stack<int> lastDigitStack)
+        private static Command CollapseBoard(GameStack sudokuBoardAndGameStack, Stack<int> rowIndexStack, Stack<int> colIndexStack, Stack<bool[]> usedDigitsStack, Stack<int> lastDigitStack)
         {
             sudokuBoardAndGameStack.StateStack.Pop();
             rowIndexStack.Pop();
@@ -89,7 +89,7 @@
             return Command.Move;
         }
 
-        private Command ExpandBoard(SudokuBoardAndGameStack sudokuBoardAndGameStack, Stack<int> rowIndexStack, Stack<int> colIndexStack, Stack<bool[]> usedDigitsStack, Stack<int> lastDigitStack)
+        private Command ExpandBoard(GameStack sudokuBoardAndGameStack, Stack<int> rowIndexStack, Stack<int> colIndexStack, Stack<bool[]> usedDigitsStack, Stack<int> lastDigitStack)
         {
             int[] currentState = new int[9 * 9];
 

@@ -17,7 +17,7 @@ public static class SudokuGame
 
         // Construct board to be solved
         // Top element is current state of the board
-        SudokuBoardAndGameStack boardAndGameStack = new SudokuGameCreator(rng).CreateSolvedBoard();
+        GameStack boardAndGameStack = new SudokuGameCreator(rng).CreateSolvedBoard();
 
         Console.WriteLine();
         Console.WriteLine("Final look of the solved board:");

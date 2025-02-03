@@ -2,7 +2,7 @@
 
 namespace SudokuKata
 {
-    public class SudokuBoardAndGameStack
+    public class GameStack
     {
         private const string LINE = "+---+---+---+";
         private const string MIDDLE = "|...|...|...|";
